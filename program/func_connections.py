@@ -11,7 +11,24 @@ from constants import (
     HTTP_PROVIDER,
     ETH_PRIVATE_KEY,
 )
+'''
+import time
+import requests
 
+# Get server time
+def get_server_time(api_url):
+    response = requests.get(api_url)
+    return response.json()['serverTime']
+
+api_url = "https://eth-goerli.g.alchemy.com/v2/n8FkOvVL4TNqL8en2nPZxS2NMayMejIY"#config('HTTP_PROVIDER')  # Remplacez ceci par l'URL réelle
+server_time = get_server_time(api_url)
+local_time = time.time()
+
+time_difference = server_time - local_time
+
+def get_adjusted_time():
+    return time.time() + time_difference
+'''
 # Connect to DYDX
 def connect_dydx():
 

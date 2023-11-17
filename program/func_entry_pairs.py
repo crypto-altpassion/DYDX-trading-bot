@@ -111,15 +111,15 @@ def open_positions(client):
                             market_1=base_market,
                             market_2=quote_market,
                             base_side=base_side,
-                            base_size=base_size,
-                            base_price=accept_base_price,
+                            base_size=base_size, # Quantité de jeton acheté
+                            base_price=accept_base_price, # Prix d'achat accepté pour un jeton
                             quote_side=quote_side,
                             quote_size=quote_size,
                             quote_price=accept_quote_price,
                             accept_failsafe_base_price=accept_failsafe_base_price,
                             z_score=z_score,
                             half_life=half_life,
-                            hedge_ratio=hedge_ratio
+                            hedge_ratio=hedge_ratio,
                         )
 
                         # Open Trades

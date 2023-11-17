@@ -106,7 +106,8 @@ class BotAgent:
         # print status
         print("---")
         print(f"{self.market_1}: Placing first order...")
-        print(f"Side : {self.base_side}, Size : {self.base_size}, Price: {self.base_price}")
+        #us_price = float(self.base_size) * float(self.base_price)
+        print(f"Side : {self.base_side}, Size : {self.base_size}, Price: {self.base_price}, US Price: ${self.accept_failsafe_base_price}")
         print("---")
 
         # Place Base Order
@@ -138,7 +139,7 @@ class BotAgent:
             return self.order_dict
         
         # print status - opening second order
-        print("---")
+        #print("---")
         print(f"{self.market_2}: Placing second order...")
         print(f"Side : {self.quote_side}, Size : {self.quote_size}, Price: {self.quote_price}")
         print("---")

@@ -8,7 +8,7 @@ from pprint import pprint
 def is_open_positions(client, market):
 
     # Protect API 
-    time.sleep(0.2)
+    time.sleep(1)
 
     # Get positions
     all_positions = client.private.get_positions(
@@ -64,14 +64,14 @@ def abort_all_positions(client):
     client.private.cancel_all_orders()
 
     # Protect API
-    time.sleep(0.5)
+    time.sleep(1)
 
     # Get markets for reference of thick size
     markets = client.public.get_markets().data
     #pprint(markets)
 
     # Protect API
-    time.sleep(0.5)
+    time.sleep(1)
 
     # Get all open positions
     positions = client.private.get_positions(status="OPEN")
@@ -115,7 +115,7 @@ def abort_all_positions(client):
             close_orders.append(order)
 
             # Pretect API
-            time.sleep(0.2)
+            time.sleep(1)
 
         # Return closed orders
         return close_orders

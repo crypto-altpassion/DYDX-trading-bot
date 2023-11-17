@@ -10,13 +10,38 @@ from pprint import pprint
 ISO_TIMES =get_ISO_times()
 
 # Get Candles recent
+def get_candles_close(client, market):
+
+    # Define output
+    close_prices = []
+
+    # Protect API
+    time.sleep(1)
+
+    # Get Data
+    candles = client.public.get_candles(
+        market= market,
+        resolution= RESOLUTION,
+        limit= 100,
+    )
+
+    # Structure Data
+    for candle in candles.data["candles"]:
+        close_prices.append(candle["close"])
+
+    # Construct and return close price series
+    close_prices.reverse()
+    prices_result = np.array(close_prices).astype(np.float)
+    return prices_result
+
+# Get Candles recent
 def get_candles_recent(client, market):
 
     # Define output
     close_prices = []
 
     # Protect API
-    time.sleep(0.2)
+    time.sleep(1)
 
     # Get Data
     candles = client.public.get_candles(
@@ -49,7 +74,7 @@ def get_candles_historical(client, market):
         to_iso = tf_obj["to_iso"]
 
         # Protect API
-        time.sleep(0.2)
+        time.sleep(1)
 
         # Get data
         candles = client.public.get_candles(
@@ -68,11 +93,9 @@ def get_candles_historical(client, market):
     close_prices.reverse()
     return close_prices
 
-
 # Construct marke prices
 def construct_market_prices(client):
     
-
     # Declare variables
     tradeable_markets = []
     markets = client.public.get_markets()
@@ -102,7 +125,7 @@ def construct_market_prices(client):
     if len(nans) > 0:
         print("Dropping colums: ")
         print(nans)
-        df.drop(coloumns=nans, inplace=True)
+        df.drop(columns=nans, inplace=True)
 
     # Return Result
     return df

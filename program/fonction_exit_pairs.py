@@ -1,15 +1,14 @@
 from constants import CLOSE_AT_ZSCORE_CROSS
-from func_utils import format_number
-from func_public import get_candles_recent
-from func_cointegration import calculate_zscore
-from func_private import place_market_order
+from fonction_utlis import format_number
+from fonction_public import get_candles_recent
+from fonction_cointegration import calculate_zscore
+from fonction_private import place_market_order
 import json
 import time
 
-
 from pprint import pprint
 
-# Close positions
+# Manage trade exits
 def manage_trade_exits(client):
     
     '''
@@ -17,7 +16,7 @@ def manage_trade_exits(client):
         Based upon criteria set in constants
     '''
 
-    # Initialise saving output
+    # Initialize saving output
     save_output = []
 
     # Opening JSON file
@@ -26,26 +25,26 @@ def manage_trade_exits(client):
         open_positions_dict = json.load(open_positions_file)
     except:
         return "complete"
-    
+
     # Guard: Exit if no open positions in file
     if len(open_positions_dict) < 1:
         return "complete"
-    
+
     # Get all open positions per trading platform
     exchange_pos = client.private.get_positions(status="OPEN")
     all_exc_pos = exchange_pos.data["positions"]
     markets_live = []
     for p in all_exc_pos:
         markets_live.append(p["market"])
-    
+
     # Protect API
     time.sleep(1)
 
-    # CHeck all saved positions match order record
+    # Check all saved positions match order record
     # Exit trade according to any exit trade rules
     for position in open_positions_dict:
 
-        # Initialise is_close trigger
+        # Initialize is_close trigger
         is_close = False
 
         # Extract position matching information from file - market 1
@@ -67,7 +66,6 @@ def manage_trade_exits(client):
         order_size_m1 = order_m1.data["order"]["size"]
         order_side_m1 = order_m1.data["order"]["side"]
 
-
         # Protect API
         time.sleep(1)
 
@@ -77,12 +75,11 @@ def manage_trade_exits(client):
         order_size_m2 = order_m2.data["order"]["size"]
         order_side_m2 = order_m2.data["order"]["side"]
 
-
         # Perform matching checks
         check_m1 = position_market_m1 == order_market_m1 and position_size_m1 == order_size_m1 and position_side_m1 == order_side_m1
         check_m2 = position_market_m2 == order_market_m2 and position_size_m2 == order_size_m2 and position_side_m2 == order_side_m2
         check_live = position_market_m1 in markets_live and position_market_m2 in markets_live
-        
+
         # Guard: If not all match exit with error
         if not check_m1 or not check_m2 or not check_live:
             print(f"Warning: Not all open positions match exchange records for {position_market_m1} and {position_market_m2}")
@@ -100,10 +97,9 @@ def manage_trade_exits(client):
         # Protect API
         time.sleep(1)
 
-        # Trigger close based on z-score
+        # Trigger close based on Z-Score
         if CLOSE_AT_ZSCORE_CROSS:
-            
-            
+
             # Initialize z_scores
             hedge_ratio = position["hedge_ratio"]
             z_score_traded = position["z_score"]
@@ -120,16 +116,14 @@ def manage_trade_exits(client):
 
                 # Initiate close trigger
                 is_close = True
-        
-        
-    
+
         ###
         # Add any other close logic you want here
         # Trigger is_close
         ###
 
         # Close positions if triggered
-        if not is_close:
+        if is_close:
 
             # Determine side - m1
             side_m1 = "SELL"
@@ -151,14 +145,11 @@ def manage_trade_exits(client):
             accept_price_m1 = format_number(accept_price_m1, tick_size_m1)
             accept_price_m2 = format_number(accept_price_m2, tick_size_m2)
 
-             # Close positions
+            # Close positions
             try:
-
                 # Close position for market 1
                 print(">>> Closing market 1 <<<")
                 print(f"Closing position for {position_market_m1}")
-                print(f"prix m1: {price_m1}")
-                #print(self.BotAgent.order_dict["order_open_price_m2"])
 
                 close_order_m1 = place_market_order(
                     client,
@@ -178,7 +169,6 @@ def manage_trade_exits(client):
                 # Close position for market 2
                 print(">>> Closing market 2 <<<")
                 print(f"Closing position for {position_market_m2}")
-                print(f"prix m2: {price_m2}")
 
                 close_order_m2 = place_market_order(
                     client,
@@ -204,4 +194,3 @@ def manage_trade_exits(client):
     print(f"{len(save_output)} Items remaining. Saving file...")
     with open("bot_agents.json", "w") as f:
         json.dump(save_output, f)
-       

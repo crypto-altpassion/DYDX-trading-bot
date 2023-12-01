@@ -1,14 +1,13 @@
 from constants import ZSCORE_THRESH, USD_PER_TRADE, USD_MIN_COLLATERAL
-from func_utils import format_number
-from func_public import get_candles_recent
-from func_cointegration import calculate_zscore
-from func_private import is_open_positions
-from func_bot_agent import BotAgent
+from fonction_utlis import format_number
+from fonction_public import get_candles_recent
+from fonction_cointegration import calculate_zscore
+from fonction_private import is_open_positions
+from fonction_bot_agent import BotAgent
 import pandas as pd
 import json
 
 from pprint import pprint
-
 
 # Open positions
 def open_positions(client):
@@ -111,8 +110,8 @@ def open_positions(client):
                             market_1=base_market,
                             market_2=quote_market,
                             base_side=base_side,
-                            base_size=base_size, # Quantité de jeton acheté
-                            base_price=accept_base_price, # Prix d'achat accepté pour un jeton
+                            base_size=base_size,
+                            base_price=accept_base_price,
                             quote_side=quote_side,
                             quote_size=quote_size,
                             quote_price=accept_quote_price,
@@ -134,7 +133,6 @@ def open_positions(client):
                             
                             # Append to list of bot agents
                             bot_agents.append(bot_open_dict)
-                            #print(f"Prix d'achat de {base_market} est de ${prix_achat_usd_base} et d'achat de {quote_market} est de {prix_achat_usd_quote}")
                             del(bot_open_dict)
 
                             # Confirm live status in print

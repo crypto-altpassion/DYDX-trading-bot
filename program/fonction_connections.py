@@ -11,6 +11,7 @@ from constants import (
     HTTP_PROVIDER,
     ETH_PRIVATE_KEY,
 )
+
 # Connect to DYDX
 def connect_dydx():
 
